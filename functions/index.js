@@ -1,9 +1,13 @@
-const functions = require("firebase-functions");
+require("dotenv").config();
 const admin = require("firebase-admin");
+const functions = require("firebase-functions");
+require("firebase/firestore");
 
-admin.initializeApp();
+admin.initializeApp(functions.config().firebase);
 
-config = {
+let db = admin.firestore();
+
+const config = {
   apiKey: process.env.API_KEY,
   authDomain: process.env.AUTH_DOMAIN,
   databaseURL: process.env.DATABASE_URL,
@@ -18,11 +22,11 @@ const app = require("express")();
 const firebase = require("firebase");
 firebase.initializeApp(config);
 
-const db = admin.firestore();
-
 app.get("/screams", (req, res) => {
-  db.firestore()
-    .collection("screams")
+  console.log("db", db);
+  console.log(config.apiKey);
+
+  db.collection("screams")
     .orderBy("createdAt", "desc")
     .get()
     .then(data => {
@@ -47,8 +51,7 @@ app.post("/scream", (req, res) => {
     createdAt: new Date().toISOString()
   };
 
-  db.firestore()
-    .collection("screams")
+  db.collection("screams")
     .add(newScream)
     .then(doc => {
       res.json({ message: `document ${doc.id} created successfully` });
