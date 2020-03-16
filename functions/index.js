@@ -7,16 +7,23 @@ const app = require("express")();
 const FBAuth = require("./util/FBAuth");
 
 const { getAllScreams, postOneScream } = require("./handlers/screams");
-const { signUp, login, uploadImage } = require("./handlers/users");
+const {
+  signUp,
+  login,
+  uploadImage,
+  addUserDetails,
+  getAuthenticatedUser
+} = require("./handlers/users");
 
 //screams route
 app.get("/screams", getAllScreams);
 app.post("/scream", FBAuth, postOneScream);
+app.post("/user/image", FBAuth, uploadImage);
+app.post("/user", FBAuth, addUserDetails);
+app.get("/user", FBAuth, getAuthenticatedUser);
 
 //Users route
-//Signup route
 app.post("/signup", signUp);
 app.post("/login", login);
-app.post("/user/image", FBAuth, uploadImage);
 
 exports.api = functions.region("europe-west1").https.onRequest(app);
