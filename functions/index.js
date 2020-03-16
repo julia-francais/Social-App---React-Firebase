@@ -22,7 +22,9 @@ const {
   login,
   uploadImage,
   addUserDetails,
-  getAuthenticatedUser
+  getAuthenticatedUser,
+  getUserDetails,
+  markNotificationsRead
 } = require("./handlers/users");
 
 //screams route
@@ -40,6 +42,8 @@ app.post("/login", login);
 app.post("/user/image", FBAuth, uploadImage);
 app.post("/user", FBAuth, addUserDetails);
 app.get("/user", FBAuth, getAuthenticatedUser);
+app.get("/user/:handle", getUserDetails);
+app.post("/notifications", FBAuth, markNotificationsRead);
 
 exports.api = functions.region("europe-west1").https.onRequest(app);
 
@@ -69,6 +73,7 @@ exports.createNotificationOnLike = functions
         if (doc.exists) {
           console.log("doc", doc);
           return db.doc(`/notifications/${snapshot.id}`).set({
+            createdAt: new Date().toISOString(),
             recipient: doc.data().userHandle,
             sender: snapshot.data().userHandle,
             type: `like`,
@@ -96,6 +101,7 @@ exports.createNotificationOnComment = functions
       .then(doc => {
         if (doc.exists) {
           return db.doc(`/notifications/${snapshot.id}`).set({
+            createdAt: new Date().toISOString(),
             recipient: doc.data().userHandle,
             sender: snapshot.data().userHandle,
             type: `comment`,
