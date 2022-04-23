@@ -12,7 +12,7 @@
     "node": "8"
   },
   "dependencies": {
-    "@firebase/firestore": "^1.12.1",
+    "@firebase/firestore": "^1.18.0",
     "dotenv": "^8.2.0",
     "firebase": "^7.11.0",
     "firebase-admin": "^8.10.0",
